@@ -962,14 +962,24 @@ with app.app_context():
     db.create_all()
 
     if not User.query.filter_by(username="admin").first():
-        db.session.add(
-            User(username="admin", password="123", role="admin", db_name="admin_db")
+        admin = User(
+            username="admin",
+            password="1234",
+            role="admin",
+            db_name="admin_db"
         )
+        db.session.add(admin)
 
     if not User.query.filter_by(username="user").first():
-        db.session.add(
-            User(username="user", password="123", role="user", db_name="user_db")
+        user = User(
+            username="user",
+            password="1234",
+            role="user",
+            db_name="user_db"
         )
+        db.session.add(user)
+
+    db.session.commit()
 
 
 if __name__ == "__main__":
