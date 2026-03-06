@@ -952,6 +952,10 @@ def delete_user(id):
 
     return redirect("/admin/users")
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
 
 # ================= DATABASE INIT =================
 with app.app_context():
