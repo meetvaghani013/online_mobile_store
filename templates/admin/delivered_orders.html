@@ -119,14 +119,21 @@
             <td>{{ loop.index }}</td>
 
             <td>
-                {% for item in order.order_items %}
-                    {% if item.product_image.startswith('http') %}
-                        <img src="{{ item.product_image }}">
-                    {% else %}
-                        <img src="{{ url_for('static', filename=item.product_image) }}">
-                    {% endif %}
-                {% endfor %}
-            </td>
+            {% for item in order.order_items %}
+            <div style="display: flex; align-items: center; margin-bottom: 8px">
+              {% if item.product_image.startswith('http') %}
+              <img src="{{ item.product_image }}" />
+              {% else %}
+              <img src="{{ url_for('static', filename=item.product_image) }}" />
+              {% endif %}
+
+              <div>
+                <b>{{ item.product_brand }} {{ item.product_name }}</b><br />
+                Qty: {{ item.qty }}
+              </div>
+            </div>
+            {% endfor %}
+          </td>
 
             <td>{{ order.customer_name }}</td>
             <td>₹{{ order.total }}</td>
