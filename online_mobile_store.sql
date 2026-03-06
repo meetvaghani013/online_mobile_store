@@ -180,7 +180,6 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`, `db_name`) VALUES
 (1, 'meet', '1212', 'admin', 'meet_db'),
-(2, 'himalay', '1212', 'admin', 'himalay_db'),
 (68, 'user', '1212', 'user', 'user_db');
 
 --
