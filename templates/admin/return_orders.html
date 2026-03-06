@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<head>
+<title>Return Orders</title>
+
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(to right, #eef2f3, #dfe9f3);
+  padding: 40px;
+}
+
+/* Header Section */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+h2 {
+  font-size: 28px;
+  color: #333;
+  margin: 0;
+}
+
+/* Back Button */
+.back-btn {
+  padding: 8px 20px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  background: linear-gradient(45deg, #ff416c, #ff4b2b);
+  color: white;
+  transition: 0.3s;
+}
+
+.back-btn:hover {
+  transform: translateX(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Table Container */
+.table-container {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: linear-gradient(45deg, #ff416c, #ff4b2b);
+  color: white;
+}
+
+th {
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+td {
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+img {
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.price {
+  font-weight: bold;
+  color: #28a745;
+  font-size: 15px;
+}
+
+.status {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #ffc107;
+  color: #333;
+}
+
+.reason {
+  max-width: 200px;
+  word-wrap: break-word;
+  font-size: 13px;
+  color: #555;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h2>📦 Return Orders</h2>
+  <button onclick="history.back()" class="back-btn">⬅ Back</button>
+</div>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Customer</th>
+  <th>Product</th>
+  <th>Image</th>
+  <th>Price</th>
+  <th>Quantity</th>
+  <th>Reason</th>
+  <th>Date</th>
+  <th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% set ns = namespace(index=1) %}
+
+{% for order in orders %}
+{% for item in order.order_items %}
+<tr>
+
+<td>{{ ns.index }}</td>
+<td>{{ order.customer_name }}</td>
+<td>{{ item.product_brand }} {{ item.product_name }}</td>
+
+<td>
+<img src="{{ url_for('static', filename=item.product_image) }}">
+</td>
+
+<td class="price">₹{{ item.price }}</td>
+<td>{{ item.qty }}</td>
+
+<td class="reason">{{ order.return_reason }}</td>
+
+<td>
+{{ order.return_date.strftime("%d-%m-%Y") if order.return_date }}
+</td>
+
+<td>
+<span class="status">{{ order.status }}</span>
+</td>
+
+</tr>
+
+{% set ns.index = ns.index + 1 %}
+
+{% endfor %}
+{% endfor %}
+
+</tbody>
+</table>
+</div>
+
+</body>
+</html>

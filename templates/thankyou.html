@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Order Confirmed</title>
+<style>
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+background:linear-gradient(135deg,#141E30,#243B55);
+min-height:100vh;
+padding:40px 20px;
+color:white;
+}
+
+h2{
+text-align:center;
+margin-bottom:10px;
+}
+
+.success-text{
+color:#4cd137;
+font-size:26px;
+}
+
+.cart-container{
+max-width:1100px;
+margin:auto;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+padding:35px;
+border-radius:20px;
+box-shadow:0 20px 50px rgba(0,0,0,0.5);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:25px;
+}
+
+th, td{
+padding:15px;
+border-bottom:1px solid rgba(255,255,255,0.1);
+text-align:left;
+}
+
+tr:hover{
+background:rgba(255,255,255,0.05);
+}
+
+img{
+width:80px;
+height:80px;
+object-fit:contain;
+background:white;
+border-radius:10px;
+padding:6px;
+}
+
+.info{
+margin-top:25px;
+line-height:1.8;
+font-size:15px;
+}
+
+.total{
+font-size:20px;
+margin-top:20px;
+color:#00cec9;
+}
+
+.btn{
+padding:10px 22px;
+border-radius:25px;
+text-decoration:none;
+display:inline-block;
+margin-top:20px;
+margin-right:10px;
+transition:0.3s;
+}
+
+.primary{
+background:#0984e3;
+color:white;
+}
+
+.primary:hover{
+transform:translateY(-3px);
+}
+
+.success-btn{
+background:#00b894;
+color:white;
+}
+</style>
+</head>
+
+<body>
+
+<h2 class="success-text">🎉 Order Confirmed, {{ order.customer_name }}!</h2>
+
+<div class="cart-container">
+
+<table>
+<tr>
+<th>Image</th>
+<th>Product</th>
+<th>Qty</th>
+<th>Subtotal</th>
+</tr>
+
+{% for product, qty, sub in items %}
+<tr>
+<td>
+{% if product.image %}
+<img src="{{ url_for('static', filename=product.image) }}">
+{% else %}
+No Image
+{% endif %}
+</td>
+<td>{{product.brand}} {{ product.name }}</td>
+<td>{{ qty }}</td>
+<td>₹{{ sub }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<div class="total">
+Total Paid: ₹{{ total }}
+</div>
+
+<div class="info">
+<p><b>Tracking ID:</b> {{ order.tracking_id }}</p>
+<p><b>Status:</b> {{ order.status }}</p>
+
+{% if order.estimated_delivery %}
+<p><b>Estimated Delivery:</b> 
+{{ order.estimated_delivery.strftime('%d %b %Y') }}
+</p>
+{% endif %}
+
+</div>
+
+<a href="/track/{{ order.tracking_id }}" class="btn success-btn">Track Order</a>
+<a href="/" class="btn primary">Back to Home</a>
+
+</div>
+
+</body>
+</html>

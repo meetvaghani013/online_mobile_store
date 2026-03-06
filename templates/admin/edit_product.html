@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Mobile Product</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+background: linear-gradient(135deg,#667eea,#764ba2);
+font-family:'Segoe UI',sans-serif;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:40px 0;
+}
+
+/* CARD */
+.card{
+width:1000px;
+border-radius:28px;
+box-shadow:0 25px 60px rgba(0,0,0,0.35);
+padding:40px;
+background:white;
+border:none;
+animation:fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(15px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* HEADER BAR */
+.header-bar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.header-bar h2{
+font-weight:700;
+margin:0;
+color:#333;
+}
+
+/* PREMIUM BACK BUTTON */
+.btn-back{
+padding:8px 18px;
+border-radius:50px;
+border:none;
+font-weight:600;
+background:linear-gradient(135deg,#ff9966,#ff5e62);
+color:white;
+transition:0.3s;
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+text-decoration:none;
+}
+
+.btn-back:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+color:white;
+}
+
+/* SECTION TITLE */
+.section-title{
+font-size:0.9rem;
+font-weight:700;
+color:#764ba2;
+margin-bottom:18px;
+border-left:5px solid #764ba2;
+padding-left:10px;
+text-transform:uppercase;
+letter-spacing:1px;
+}
+
+/* FORM */
+.form-label{
+font-weight:600;
+font-size:0.85rem;
+color:#555;
+}
+
+.form-control,.form-select{
+border-radius:12px;
+padding:10px;
+transition:0.2s;
+}
+
+.form-control:focus,.form-select:focus{
+box-shadow:0 0 8px rgba(118,75,162,0.4);
+border-color:#764ba2;
+}
+
+/* SAVE BUTTON */
+.btn-save{
+border-radius:14px;
+padding:15px;
+width:100%;
+font-weight:700;
+background:linear-gradient(135deg,#667eea,#764ba2);
+color:white;
+border:none;
+margin-top:25px;
+transition:0.3s;
+}
+
+.btn-save:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 25px rgba(0,0,0,0.25);
+}
+
+/* IMAGE */
+.preview-img{
+max-height:140px;
+border-radius:15px;
+margin-top:15px;
+border:1px solid #eee;
+box-shadow:0 6px 15px rgba(0,0,0,0.1);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="header-bar">
+<h2>✏ Edit Mobile Product</h2>
+<a href="/admin/products" class="btn-back">⬅ Back</a>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+
+<!-- BASIC -->
+<div class="section-title">📦 Basic & Physical Specs</div>
+<div class="row g-3 mb-4">
+<div class="col-md-4">
+<label class="form-label">Product Name</label>
+<input type="text" name="name" value="{{ product.name }}" class="form-control" required>
+</div>
+
+<div class="col-md-3">
+<label class="form-label">Brand</label>
+<select name="brand" class="form-select" required>
+{% for b in ["i-phone","Samsung","OnePlus","Google","Vivo","Oppo","Xiaomi","Realme","Motorola","Nothing","Infinix","iQOO","Lava","Asus","Sony","Honor","Huawei"] %}
+<option value="{{b}}" {% if product.brand==b %}selected{% endif %}>{{b}}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-2">
+<label class="form-label">Weight (g)</label>
+<input type="number" name="weight" value="{{ product.weight }}" class="form-control" required>
+</div>
+
+<div class="col-md-3">
+<label class="form-label">Color</label>
+<input type="text" name="color" value="{{ product.color }}" class="form-control" required>
+</div>
+</div>
+
+<!-- Connectivity -->
+<div class="section-title">📶 Connectivity</div>
+<div class="row g-3 mb-4">
+<div class="col-md-4">
+<label class="form-label">Network</label>
+<select name="network" class="form-select" required>
+<option value="5G" {% if product.network=="5G" %}selected{% endif %}>5G</option>
+<option value="4G" {% if product.network=="4G" %}selected{% endif %}>4G</option>
+<option value="3G/2G" {% if product.network=="3G/2G" %}selected{% endif %}>3G/2G</option>
+</select>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">SIM</label>
+<select name="sim_type" class="form-select" required>
+<option value="Dual SIM" {% if product.sim_type=="Dual SIM" %}selected{% endif %}>Dual SIM</option>
+<option value="Single SIM" {% if product.sim_type=="Single SIM" %}selected{% endif %}>Single SIM</option>
+<option value="eSIM" {% if product.sim_type=="eSIM" %}selected{% endif %}>eSIM</option>
+</select>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Display</label>
+<select name="display" class="form-select" required>
+{% for d in ['6.1"','6.7"','6.8"','6.9"'] %}
+<option value="{{d}}" {% if product.display==d %}selected{% endif %}>{{d}}</option>
+{% endfor %}
+</select>
+</div>
+</div>
+
+<!-- Performance -->
+<div class="section-title">⚙ Performance</div>
+<div class="row g-3 mb-4">
+
+<div class="col-md-4">
+<label class="form-label">RAM</label>
+<select name="ram" class="form-select" required>
+{% for r in ["2GB","3GB","4GB","6GB","8GB","12GB","16GB","18GB","24GB"] %}
+<option value="{{r}}" {% if product.ram==r %}selected{% endif %}>{{r}}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Storage</label>
+<select name="storage" class="form-select" required>
+{% for s in ["32GB","64GB","128GB","256GB","512GB","1TB","2TB"] %}
+<option value="{{s}}" {% if product.storage==s %}selected{% endif %}>{{s}}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Battery</label>
+<select name="battery" class="form-select" required>
+{% for b in ["3000mAh","3500mAh","4000mAh","4500mAh","5000mAh","5500mAh","6000mAh","6500mAh","7000mAh"] %}
+<option value="{{b}}" {% if product.battery==b %}selected{% endif %}>{{b}}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Processor</label>
+<input type="text" name="processor" value="{{ product.processor }}" class="form-control" required>
+</div>
+
+</div>
+
+<!-- Camera -->
+<div class="section-title">📸 Camera</div>
+<div class="row g-3 mb-4">
+
+<div class="col-md-6">
+<label class="form-label">Back Camera</label>
+<select name="back_camera" class="form-select" required>
+{% for c in ["8MP","12MP","16MP","24MP","48MP","50MP","64MP","108MP","200MP"] %}
+<option value="{{c}}" {% if product.back_camera==c %}selected{% endif %}>{{c}}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Front Camera</label>
+<select name="front_camera" class="form-select" required>
+{% for c in ["5MP","8MP","12MP","16MP","20MP","32MP","44MP","50MP"] %}
+<option value="{{c}}" {% if product.front_camera==c %}selected{% endif %}>{{c}}</option>
+{% endfor %}
+</select>
+</div>
+</div>
+
+<!-- Price -->
+<div class="section-title">💰 Price & Stock</div>
+<div class="row g-3">
+
+<div class="col-md-4">
+<label class="form-label">Price</label>
+<input type="number" name="price" value="{{ product.price }}" class="form-control" required>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Stock</label>
+<input type="number" name="quantity" value="{{ product.quantity }}" class="form-control" required>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Change Image</label>
+<input type="file" name="image" class="form-control">
+</div>
+
+<div class="col-md-12 text-center">
+{% if product.image %}
+<img src="{{ url_for('static', filename=product.image) }}" class="preview-img">
+{% endif %}
+</div>
+
+<div class="col-md-12">
+<label class="form-label">About</label>
+<textarea name="about" class="form-control" rows="3" required>{{ product.about }}</textarea>
+</div>
+
+</div>
+
+<button type="submit" class="btn-save">💾 Update Product</button>
+
+</form>
+</div>
+
+</body>
+</html>

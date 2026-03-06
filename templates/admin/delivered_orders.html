@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delivered Orders</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Segoe UI',sans-serif;
+            background: linear-gradient(135deg,#667eea,#764ba2);
+            padding:40px;
+        }
+
+        h2{
+            text-align:center;
+            color:white;
+            margin-bottom:30px;
+            font-size:30px;
+        }
+
+        .container{
+            background:white;
+            padding:30px;
+            border-radius:15px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-bottom:20px;
+            text-decoration:none;
+            background:#6c757d;
+            color:white;
+            padding:8px 15px;
+            border-radius:8px;
+            transition:0.3s;
+        }
+
+        .back-btn:hover{
+            background:#495057;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th{
+            background:#212529;
+            color:white;
+            padding:12px;
+            text-align:left;
+        }
+
+        td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+        }
+
+        tr:hover{
+            background:#f1f3f5;
+        }
+
+        .status{
+            background:#4caf50;
+            color:white;
+            padding:5px 12px;
+            border-radius:20px;
+            font-size:13px;
+        }
+
+        img{
+            height:70px;
+            object-fit:cover;
+            margin-right: 10px;
+        }
+
+        .date{
+            font-size:13px;
+            color:#555;
+        }
+
+        .no-orders{
+            text-align:center;
+            padding:20px;
+            color:#888;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<h2>📦 Delivered Orders</h2>
+
+<div class="container">
+
+<a href="/admin" class="back-btn">⬅ Back to Dashboard</a>
+
+<table>
+    <tr>
+        <th>No</th>
+        <th>Product</th>
+        <th>Customer</th>
+        <th>Total</th>
+        <th>Tracking ID</th>
+        <th>Status</th>
+        <th>Delivered Date</th>
+    </tr>
+
+    {% if orders %}
+        {% for order in orders %}
+        <tr>
+            <td>{{ loop.index }}</td>
+
+            <td>
+                {% for item in order.order_items %}
+                    {% if item.product_image.startswith('http') %}
+                        <img src="{{ item.product_image }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename=item.product_image) }}">
+                    {% endif %}
+                {% endfor %}
+            </td>
+
+            <td>{{ order.customer_name }}</td>
+            <td>₹{{ order.total }}</td>
+            <td>{{ order.tracking_id }}</td>
+
+            <td>
+                <span class="status">{{ order.status }}</span>
+            </td>
+
+            <td class="date">
+                {% if order.delivered_date %}
+                    {{ order.delivered_date.strftime("%d-%m-%Y %I:%M %p") }}
+                {% else %}
+                    Not Delivered Yet
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="7" class="no-orders">No Delivered Orders Found</td>
+        </tr>
+    {% endif %}
+
+</table>
+
+</div>
+
+</body>
+</html>

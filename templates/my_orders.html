@@ -1,0 +1,281 @@
+<!doctype html>
+<html>
+  <head>
+    <title>My Orders</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 40px;
+      }
+
+      h2 {
+        text-align: center;
+        color: white;
+        margin-bottom: 40px;
+        font-size: 32px;
+        letter-spacing: 1px;
+      }
+
+      .order-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        transition: 0.3s ease;
+      }
+
+      .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      }
+
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .order-info p {
+        margin: 5px 0;
+        color: #444;
+        font-size: 14px;
+      }
+
+      .status {
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: bold;
+        color: white;
+      }
+
+      .ordered { background: #777; }
+      .shipped { background: #ff9800; }
+      .out { background: #2196f3; }
+      .delivered { background: #4caf50; }
+      .returned { background: #444; }
+      .cancelled { background: #f44336; }
+
+      /* ===============================
+         PREMIUM ACTION BUTTON STYLE
+      ================================ */
+
+      .action-btn {
+        padding: 8px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 30px;
+        text-decoration: none;
+        margin-left: 10px;
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+        transition: 0.3s ease;
+        letter-spacing: 0.5px;
+        margin-bottom: -12px;
+      }
+
+      /* Cancel Button */
+      .cancel-btn {
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        color: white;
+        box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4);
+      }
+
+      .cancel-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 65, 108, 0.6);
+      }
+
+      /* Return Button */
+      .return-btn {
+        background: linear-gradient(45deg, #141e30, #243b55);
+        color: white;
+        box-shadow: 0 4px 15px rgba(36, 59, 85, 0.4);
+      }
+
+      .return-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(36, 59, 85, 0.6);
+      }
+
+      /* Shine effect */
+      .action-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          120deg,
+          transparent,
+          rgba(255, 255, 255, 0.6),
+          transparent
+        );
+        transition: 0.6s;
+      }
+
+      .action-btn:hover::before {
+        left: 100%;
+      }
+
+      .items-title {
+        margin: 15px 0 10px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .item-box {
+        display: flex;
+        align-items: center;
+        background: white;
+        padding: 12px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        transition: 0.2s;
+      }
+
+      .item-box:hover {
+        transform: scale(1.02);
+      }
+
+      .img {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      img {
+        height: 85px;
+        margin-right: 18px;
+        border: 1px solid #eee;
+      }
+
+      .item-details {
+        flex: 1;
+      }
+
+      .item-details p {
+        margin: 4px 0;
+        font-size: 14px;
+        color: #555;
+      }
+
+      .item-details b {
+        font-size: 15px;
+        color: #222;
+      }
+
+      .delivered-date {
+        font-size: 13px;
+        margin-top: 10px;
+        color: #777;
+      }
+
+      .btn-div {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+      }
+
+      .btn {
+        padding: 15px 40px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.4s ease;
+        box-shadow: 0 0 20px rgba(255, 75, 43, 0.6);
+      }
+
+      .btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 40px rgba(255, 75, 43, 0.9);
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>📦 My Orders</h2>
+
+    {% for order in orders %}
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-info">
+          <p><b>Total:</b> ₹{{ order.total }}</p>
+          <p><b>Tracking ID:</b> {{ order.tracking_id }}</p>
+        </div>
+
+        <div>
+          <span
+            class="status {% if order.status == 'Ordered' %}ordered
+            {% elif order.status == 'Shipped' %}shipped
+            {% elif order.status == 'Out for Delivery' %}out
+            {% elif order.status == 'Delivered' %}delivered
+            {% elif order.status == 'Return' %}returned
+            {% elif order.status == 'Cancelled' %}cancelled
+            {% endif %}">
+            {{ order.status }}
+          </span>
+
+          {% if order.status == "Delivered" %}
+          <a href="/return-order/{{ order.id }}" class="action-btn return-btn">
+            ↩ Return Order
+          </a>
+          {% endif %}
+
+          {% if order.status in ["Ordered","Shipped"] %}
+          <a href="/cancel-order/{{ order.id }}" class="action-btn cancel-btn">
+            ✖ Cancel Order
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if order.delivered_date %}
+      <div class="delivered-date">
+        Delivered On: {{ order.delivered_date.strftime("%d-%m-%Y %I:%M %p") }}
+      </div>
+      {% endif %}
+
+      <div class="items-title">Items</div>
+
+      {% for item in order.order_items %}
+      <div class="item-box">
+        <div class="img">
+          <img src="{{ url_for('static', filename=item.product_image) }}" />
+        </div>
+        <div class="item-details">
+          <p><b>{{item.product_brand}} {{ item.product_name }}</b></p>
+          <p>Price: ₹{{ item.price }}</p>
+          <p>Quantity: {{ item.qty }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+    <div class="btn-div">
+      <a href="/"><button class="btn">Go To Home 🚀</button></a>
+    </div>
+  </body>
+</html>

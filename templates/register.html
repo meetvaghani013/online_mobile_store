@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#667eea,#764ba2);
+}
+
+.register-box{
+width:400px;
+background:white;
+padding:35px;
+border-radius:20px;
+box-shadow:0 15px 35px rgba(0,0,0,0.2);
+}
+
+.register-box h2{
+text-align:center;
+margin-bottom:25px;
+}
+
+.input-group{
+position:relative;
+margin-bottom:15px;
+}
+
+.input-group input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+.input-group input:focus{
+outline:none;
+border-color:#764ba2;
+}
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+.toggle-eye{
+position:absolute;
+right:12px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+font-size:14px;
+color:#666;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:25px;
+background:#764ba2;
+color:white;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+background:#5a3790;
+}
+
+/* ✅ Updated Toast Container */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.toast {
+    min-width: 260px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    background: #ff4d4d;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    /* Slide in animation */
+    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transition: all 0.6s ease; /* Smooth transition for moving up */
+}
+
+/* ✅ Upward Moving Animation */
+.toast.fade-out {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.9); /* Upar ki side move hoga */
+    margin-bottom: -50px; /* Ye niche wale elements ko upar khichega */
+    pointer-events: none;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(110%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+
+
+.toast.success {
+    background: #28a745; /* Green for Success */
+}
+
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #764ba2;
+    text-decoration: none;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="toast-container"></div>
+
+<div class="register-box">
+    <h2>📝 Register</h2>
+    <form id="registerForm">
+        <div class="input-group">
+            <input type="text" name="username" id="username" placeholder="Username">
+        </div>
+        <div class="input-group">
+            <input type="password" name="password" id="password" placeholder="Password">
+            <span class="toggle-eye" onclick="togglePassword('password')">👁</span>
+        </div>
+        <div class="input-group">
+            <input type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm Password">
+            <span class="toggle-eye" onclick="togglePassword('confirmPassword')">👁</span>
+        </div>
+        <button type="submit" id="regBtn">Register</button>
+    </form>
+    <a href="/login">Already have an account? Login</a>
+</div>
+
+<script>
+// Generic Toast Function
+function showToast(message, type = "error") {
+    const container = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    
+    let icon = type === "success" ? "✅" : "❌";
+    toast.innerHTML = `<span style="margin-right:10px">${icon}</span> ${message}`;
+    
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("fade-out");
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
+
+function togglePassword(id){
+    let input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+}
+
+document.getElementById("registerForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    let username = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+    let btn = document.getElementById("regBtn");
+
+    // Client-side quick check
+    if(password !== confirmPassword){
+        showToast("Passwords do not match!");
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Processing...";
+
+    let formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
+    formData.append("confirm_password", confirmPassword);
+
+    fetch("/register", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success){
+            showToast("Registration Successful! Redirecting...", "success");
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 2000);
+        } else {
+            // Backend se aane wala error yahan stack hoga
+            showToast(data.message);
+            btn.disabled = false;
+            btn.innerText = "Register";
+        }
+    })
+    .catch(() => {
+        showToast("Server Error. Please try again.");
+        btn.disabled = false;
+        btn.innerText = "Register";
+    });
+});
+</script>
+
+</body>
+</html>

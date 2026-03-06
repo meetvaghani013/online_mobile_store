@@ -1,0 +1,375 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Purchase</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        min-height: 100vh;
+        padding: 50px 20px;
+        color: white;
+      }
+
+      /* Title */
+      h2 {
+        text-align: center;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 30px;
+      }
+
+      /* Same Glass Container as Cart */
+      .cart-container {
+        max-width: 1100px;
+        margin: auto;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+        padding: 35px;
+        border-radius: 25px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Same Button Style */
+      .btn {
+        padding: 10px 20px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: 0.3s;
+        display: inline-block;
+        border: none;
+        cursor: pointer;
+      }
+
+      .primary {
+        background: linear-gradient(45deg, #00c6ff, #0072ff);
+        color: white;
+        margin-bottom: 20px;
+      }
+
+      .primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 114, 255, 0.5);
+      }
+
+      .success {
+        background: linear-gradient(45deg, #00b09b, #96c93d);
+        color: white;
+      }
+
+      .success:hover {
+        box-shadow: 0 8px 20px rgba(150, 201, 61, 0.5);
+      }
+
+      /* Same Table Style */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 25px;
+      }
+
+      th {
+        text-align: left;
+        padding: 15px;
+        font-weight: 500;
+        color: #ddd;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      td {
+        padding: 20px 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        vertical-align: middle;
+      }
+
+      tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      /* Same Image Style */
+      img {
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+        border-radius: 15px;
+        background: white;
+        padding: 8px;
+      }
+
+      /* Form Group */
+      .form-group {
+        margin-top: 20px;
+      }
+
+      /* Glass Input + Select */
+      input {
+        min-width: 60%;
+        padding: 14px 18px;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        backdrop-filter: blur(10px);
+        transition: 0.3s;
+      }
+
+      select {
+        min-width: 63.455%;
+        padding: 14px 18px;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        backdrop-filter: blur(10px);
+        transition: 0.3s;
+      }
+
+      /* Placeholder Color */
+      input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      /* Focus Effect */
+      input:focus,
+      select:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid #00c6ff;
+        box-shadow: 0 0 10px rgba(0, 198, 255, 0.4);
+      }
+
+      /* Select Arrow Fix */
+      select {
+        appearance: none;
+        background: rgba(255, 255, 255, 0.08)
+          url("data:image/svg+xml,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")
+          no-repeat right 15px center;
+        background-size: 16px;
+        padding-right: 40px;
+      }
+
+      /* Dropdown Option Color */
+      select option {
+        background: #203a43;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Purchase Summary</h2>
+
+    <a href="/cart" class="btn primary">⬅ Back to Cart</a>
+
+    <div class="cart-container">
+      <table>
+        <tr>
+          <th>Image</th>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Subtotal</th>
+        </tr>
+
+        {% for product, qty, sub in items %}
+        <tr>
+          <td><img src="{{ url_for('static', filename=product.image) }}" /></td>
+          <td>{{product.brand}} {{ product.name }}</td>
+          <td>{{ qty }}</td>
+          <td>₹{{ sub }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <h3 style="margin-top: 25px">Total: ₹{{ total }}</h3>
+
+      <form method="POST" action="/confirm_purchase">
+        {% if items|length == 1 %}
+        <input type="hidden" name="single_pid" value="{{ items[0][0].id }}" />
+        <input type="hidden" name="single_qty" value="{{ items[0][1] }}" />
+        {% endif %}
+        <div class="form-group">
+          <input
+            name="name"
+            value="{{ session.username }}"
+            placeholder="Full Name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <input name="address" placeholder="Full Address" required />
+        </div>
+
+        <div class="form-group">
+          <input
+            type="tel"
+            name="phone"
+            id="phone"
+            pattern="[0-9]{10}"
+            maxlength="10"
+            placeholder="Mobile Number (10 digits)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <select name="payment" required>
+            <option value="">Select Payment Method</option>
+            <option value="UPI">UPI</option>
+            <option value="Card">Card</option>
+            <option value="COD">Cash on Delivery</option>
+          </select>
+          <!-- UPI Field -->
+          <div class="form-group" id="upiField" style="display: none">
+            <input
+              type="text"
+              name="upi_id"
+              id="upi_id"
+              pattern="^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$"
+              placeholder="Enter UPI ID (example@upi)"
+            />
+          </div>
+
+          <!-- Card Fields -->
+          <div id="cardFields" style="display: none">
+            <div class="form-group">
+              <input
+                type="text"
+                name="card_number"
+                id="card_number"
+                placeholder="Card Number (16 digits)"
+                maxlength="16"
+                pattern="[0-9]{16}"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                name="card_name"
+                id="card_name"
+                placeholder="Name on Card"
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                name="expiry"
+                id="expiry"
+                placeholder="MM/YY"
+                maxlength="5"
+                pattern="^(0[1-9]|1[0-2])\/?([0-9]{2})$"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                name="cvv"
+                id="cvv"
+                placeholder="CVV"
+                maxlength="3"
+                pattern="[0-9]{3}"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn success">Confirm Order</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      const paymentSelect = document.querySelector("select[name='payment']");
+      const upiField = document.getElementById("upiField");
+      const cardFields = document.getElementById("cardFields");
+      const phone = document.getElementById("phone");
+      const upiInput = document.getElementById("upi_id");
+      const cardNumber = document.getElementById("card_number");
+      const cardName = document.getElementById("card_name");
+      const expiry = document.getElementById("expiry");
+      const cvv = document.getElementById("cvv");
+
+      paymentSelect.addEventListener("change", function () {
+        // Reset all fields
+        upiField.style.display = "none";
+        cardFields.style.display = "none";
+
+        upiInput.required = false;
+        cardNumber.required = false;
+        cardName.required = false;
+        expiry.required = false;
+        cvv.required = false;
+
+        if (this.value === "UPI") {
+          upiField.style.display = "block";
+          upiInput.required = true;
+        }
+
+        if (this.value === "Card") {
+          cardFields.style.display = "block";
+          cardNumber.required = true;
+          cardName.required = true;
+          expiry.required = true;
+          cvv.required = true;
+        }
+      });
+
+      phone.addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "");
+        if (this.value.length > 10) {
+          this.value = this.value.slice(0, 10);
+        }
+      });
+
+      upiInput.addEventListener("input", function () {
+        const upiPattern = /^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$/;
+
+        if (!upiPattern.test(this.value)) {
+          this.setCustomValidity("Enter valid UPI ID (example@bank)");
+        } else {
+          this.setCustomValidity("");
+        }
+      });
+
+      cardNumber.addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "");
+        if (this.value.length !== 16) {
+          this.setCustomValidity("Card number must be exactly 16 digits");
+        } else {
+          this.setCustomValidity("");
+        }
+      });
+
+      cvv.addEventListener("input", function () {
+        this.value = this.value.replace(/\D/g, "");
+        if (this.value.length !== 3) {
+          this.setCustomValidity("CVV must be exactly 3 digits");
+        } else {
+          this.setCustomValidity("");
+        }
+      });
+
+      expiry.addEventListener("input", function () {
+        const pattern = /^(0[1-9]|1[0-2])\/[0-9]{2}$/;
+        if (!pattern.test(this.value)) {
+          this.setCustomValidity("Enter valid expiry in MM/YY format");
+        } else {
+          this.setCustomValidity("");
+        }
+      });
+    </script>
+
+  </body>
+</html>

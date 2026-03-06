@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+<head>
+<title>Admin Dashboard</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#141e30,#243b55);
+color:white;
+}
+
+/* Layout */
+
+.wrapper{
+display:flex;
+min-height:100vh;
+}
+
+/* Sidebar */
+
+.sidebar{
+width:250px;
+background:#0f172a;
+padding:30px 20px;
+}
+
+.sidebar h4{
+margin-bottom:35px;
+font-weight:600;
+}
+
+.sidebar a{
+display:block;
+color:#cbd5e1;
+text-decoration:none;
+padding:12px 15px;
+border-radius:8px;
+margin-bottom:10px;
+transition:0.3s;
+}
+
+.sidebar a:hover{
+background:#2563eb;
+color:white;
+}
+
+/* Main */
+
+.main{
+flex:1;
+padding:40px;
+}
+
+/* Topbar */
+
+.topbar{
+margin-bottom:40px;
+}
+
+/* Dashboard Grid */
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+}
+
+/* Cards */
+
+.card{
+height:140px;
+border-radius:15px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+color:white;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
+transition:0.3s;
+}
+
+.card i{
+font-size:28px;
+margin-bottom:8px;
+}
+
+.card h2{
+font-size:28px;
+font-weight:700;
+}
+
+.card p{
+font-size:14px;
+opacity:0.9;
+}
+
+.card:hover{
+transform:translateY(-6px);
+}
+
+/* Colors */
+
+.products{background:linear-gradient(135deg,#6366f1,#8b5cf6);}
+.users{background:linear-gradient(135deg,#f97316,#ef4444);}
+.profit{background:linear-gradient(135deg,#06b6d4,#2563eb);}
+.pending{background:linear-gradient(135deg,#f59e0b,#eab308);}
+.delivered{background:linear-gradient(135deg,#22c55e,#4ade80);}
+.return{background:linear-gradient(135deg,#a855f7,#6366f1);}
+.cancel{background:linear-gradient(135deg,#f43f5e,#ef4444);}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.sidebar{
+display:none;
+}
+
+.main{
+padding:20px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h4>⚙️ Admin Panel</h4>
+
+<a href="/admin/products">📦 Manage Products</a>
+<a href="/admin/users">👥 Manage Users</a>
+<a href="/admin/orders">🛒 Pending Orders</a>
+<a href="/admin/delivered_orders">✅ Delivered Orders</a>
+<a href="/admin/return-orders">↩️ Return Orders</a>
+<a href="/admin/cancel-orders">❌ Cancelled Orders</a>
+<a href="/logout" style="color:#ff6b6b;">🚪 Logout</a>
+
+</div>
+
+<!-- Main -->
+
+<div class="main">
+
+<div class="topbar">
+<h3>Welcome, {{ session['username'] }} 👋</h3>
+</div>
+
+<div class="dashboard">
+
+<div class="card products">
+<i class="fa fa-box"></i>
+<h2>{{ total_products }}</h2>
+<p>Total Products</p>
+</div>
+
+<div class="card users">
+<i class="fa fa-users"></i>
+<h2>{{ total_users }}</h2>
+<p>Total Users</p>
+</div>
+
+<div class="card profit">
+<i class="fa fa-indian-rupee-sign"></i>
+<h2>₹ {{ total_profit }}</h2>
+<p>Total Profit</p>
+</div>
+
+<div class="card pending">
+<i class="fa fa-clock"></i>
+<h2>{{ pending_orders }}</h2>
+<p>Pending Orders</p>
+</div>
+
+<div class="card delivered">
+<i class="fa fa-check-circle"></i>
+<h2>{{ delivered_orders }}</h2>
+<p>Delivered Orders</p>
+</div>
+
+<div class="card return">
+<i class="fa fa-rotate-left"></i>
+<h2>{{ return_orders }}</h2>
+<p>Return Orders</p>
+</div>
+
+<div class="card cancel">
+<i class="fa fa-times-circle"></i>
+<h2>{{ cancelled_orders }}</h2>
+<p>Cancelled Orders</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
