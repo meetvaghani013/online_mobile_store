@@ -14,9 +14,10 @@ app = Flask(__name__)
 app.secret_key = "secret123"
 
 # ================= DATABASE CONFIG =================
-# ================= DATABASE CONFIG =================
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "database.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -27,12 +28,10 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-    # temporary
-
-    @app.route("/check_products")
-    def check_products():
-        products = Product.query.all()
-        return str([(product.id, product.name, product.image) for product in products])
+@app.route("/check_products")
+def check_products():
+    products = Product.query.all()
+    return str([(product.id, product.name, product.image) for product in products])
 
 
 # ================= MODELS =================
